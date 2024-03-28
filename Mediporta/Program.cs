@@ -24,7 +24,7 @@ namespace Mediporta
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpClient();
-            builder.Services.AddScoped<TagSeeder>();
+            builder.Services.AddScoped<ITagSeeder, TagSeeder>();
             builder.Logging.AddNLog();
             builder.Services.AddScoped<ErrorHandlingMiddleware>();
             builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TestDatabaseConnectionString")));
@@ -45,13 +45,11 @@ namespace Mediporta
             {
                 var services = scope.ServiceProvider;
                 var dbContext = services.GetRequiredService<MyDbContext>();
-
-
                 dbContext.Database.Migrate();
 
-                //Problem z tymi linijkami - jesli zakomentuje wszystko dzia³a bez zarzutu
-                var tagSeeder = services.GetRequiredService<TagSeeder>();
-                tagSeeder.SeedTagsToDatabase().Wait();
+                //Problem z tymi linijkami - jesli zakomentuje ³¹czy siê z baz¹ danych
+                //var tagSeeder = services.GetRequiredService<TagSeeder>();
+                //await tagSeeder.SeedTagsToDatabase();
             }
             app.Run();
         }

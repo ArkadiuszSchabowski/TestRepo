@@ -1,4 +1,6 @@
-﻿using Mediporta.Database.Entities;
+﻿using Mediporta.Database;
+using Mediporta.Database.Entities;
+using Mediporta.Seeders;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.IO.Compression;
@@ -10,14 +12,22 @@ namespace Mediporta.Controllers
     public class TagController
     {
         private readonly HttpClient _httpClient;
+        private readonly MyDbContext _context;
+        private readonly ITagSeeder _seeder;
 
-        public TagController(HttpClient httpClient)
+        public TagController(HttpClient httpClient, MyDbContext context, ITagSeeder seeder)
         {
             _httpClient = httpClient;
+            _context = context;
+            _seeder = seeder;
         }
         [HttpGet]
         public async Task<object> Get()
         {
+            if (!_context.Tags.Any())
+            {
+                _seeder.SeedTagsToDatabase();
+            }
             var apiUrl = "https://api.stackexchange.com";
 
             _httpClient.BaseAddress = new Uri(apiUrl);

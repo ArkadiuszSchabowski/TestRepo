@@ -10,7 +10,11 @@ using Newtonsoft.Json;
 
 namespace Mediporta.Seeders
 {
-    public class TagSeeder
+    public interface ITagSeeder
+    {
+       void SeedTagsToDatabase();
+    }
+    public class TagSeeder : ITagSeeder
     {
         private readonly HttpClient _httpClient;
         private readonly MyDbContext _context;
@@ -21,7 +25,7 @@ namespace Mediporta.Seeders
             _context = context;
         }
 
-        public async Task SeedTagsToDatabase()
+        public void SeedTagsToDatabase()
         {
             List<Tag> range = new List<Tag>();
 
@@ -30,13 +34,14 @@ namespace Mediporta.Seeders
 
             for (int i = 1; i < 11; i++)
             {
-                var response = await _httpClient.GetAsync($"/2.3/tags?page={i}&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow");
+                var response = _httpClient.GetAsync("/2.3/tags?page=1&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow").Result;
+
                 response.EnsureSuccessStatusCode();
 
-                using (var decompressionStream = new GZipStream(await response.Content.ReadAsStreamAsync(), CompressionMode.Decompress))
+                using (var decompressionStream = new GZipStream(response.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
                 using (var streamReader = new StreamReader(decompressionStream))
                 {
-                    var json = await streamReader.ReadToEndAsync();
+                    var json = streamReader.ReadToEndAsync().Result;
                     var responseApi = JsonConvert.DeserializeObject<ApiResponse>(json);
 
                     if (responseApi != null && responseApi.Items != null)
@@ -44,13 +49,14 @@ namespace Mediporta.Seeders
                         foreach (var tag in responseApi.Items)
                         {
                             range.Add(tag);
-                            await Task.Delay(1000);
+                            Task.Delay(1000).Wait();
                         }
                     }
                 }
             }
             _context.Tags.AddRange(range);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
     }
 }
+
