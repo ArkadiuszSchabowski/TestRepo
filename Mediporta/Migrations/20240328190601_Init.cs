@@ -23,7 +23,7 @@ namespace Mediporta.Migrations
                     IsRequired = table.Column<bool>(type: "bit", nullable: false),
                     LastActivityDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Synonyms = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Synonyms = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

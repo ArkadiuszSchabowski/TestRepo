@@ -44,12 +44,13 @@ namespace Mediporta.Seeders
                         foreach (var tag in responseApi.Items)
                         {
                             range.Add(tag);
+                            await Task.Delay(1000);
                         }
                     }
                 }
             }
             _context.Tags.AddRange(range);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

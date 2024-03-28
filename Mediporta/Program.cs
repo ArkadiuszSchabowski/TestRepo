@@ -7,14 +7,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NLog.Extensions.Logging;
 using System;
 
 namespace Mediporta
 {
     public class Program
     {
+        private static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public static void Main(string[] args)
         {
+            _logger.Info("App started");
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
@@ -22,6 +25,7 @@ namespace Mediporta
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<TagSeeder>();
+            builder.Logging.AddNLog();
             builder.Services.AddScoped<ErrorHandlingMiddleware>();
             builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TestDatabaseConnectionString")));
 
@@ -37,23 +41,18 @@ namespace Mediporta
             app.UseAuthorization();
             app.MapControllers();
 
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var services = scope.ServiceProvider;
-            //    var dbContext = services.GetRequiredService<MyDbContext>();
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var dbContext = services.GetRequiredService<MyDbContext>();
 
-            //    try
-            //    {
-            //        dbContext.Database.Migrate();
-            //        var tagSeeder = services.GetRequiredService<TagSeeder>();
-            //        tagSeeder.SeedTagsToDatabase().Wait();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine("An error occurred while seeding the database: " + ex.Message);
-            //    }
-            //}
 
+                dbContext.Database.Migrate();
+
+                //Problem z tymi linijkami - jesli zakomentuje wszystko dzia³a bez zarzutu
+                var tagSeeder = services.GetRequiredService<TagSeeder>();
+                tagSeeder.SeedTagsToDatabase().Wait();
+            }
             app.Run();
         }
     }

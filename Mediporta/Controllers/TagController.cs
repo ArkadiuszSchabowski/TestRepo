@@ -23,8 +23,8 @@ namespace Mediporta.Controllers
             _httpClient.BaseAddress = new Uri(apiUrl);
 
             var response = await _httpClient.GetAsync("/2.3/tags?page=1&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow");
-            response.EnsureSuccessStatusCode();
 
+            response.EnsureSuccessStatusCode();
 
             using (var decompressionStream = new GZipStream(await response.Content.ReadAsStreamAsync(), CompressionMode.Decompress))
 
