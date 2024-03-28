@@ -27,14 +27,15 @@ namespace Mediporta.Seeders
 
         public void SeedTagsToDatabase()
         {
-            List<Tag> range = new List<Tag>();
+            List<Tag> listTag = new List<Tag>();
 
             var apiUrl = "https://api.stackexchange.com";
             _httpClient.BaseAddress = new Uri(apiUrl);
 
             for (int i = 1; i < 11; i++)
             {
-                var response = _httpClient.GetAsync("/2.3/tags?page=1&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow").Result;
+                var response = _httpClient.GetAsync($"/2.3/tags?page={i}&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow").Result;
+                Task.Delay(1000).Wait();
 
                 response.EnsureSuccessStatusCode();
 
@@ -48,13 +49,12 @@ namespace Mediporta.Seeders
                     {
                         foreach (var tag in responseApi.Items)
                         {
-                            range.Add(tag);
-                            Task.Delay(1000).Wait();
+                            listTag.Add(tag);
                         }
                     }
                 }
             }
-            _context.Tags.AddRange(range);
+            _context.Tags.AddRange(listTag);
             _context.SaveChanges();
         }
     }

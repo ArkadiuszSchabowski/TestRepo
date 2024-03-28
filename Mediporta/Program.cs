@@ -46,10 +46,11 @@ namespace Mediporta
                 var services = scope.ServiceProvider;
                 var dbContext = services.GetRequiredService<MyDbContext>();
                 dbContext.Database.Migrate();
-
-                //Problem z tymi linijkami - jesli zakomentuje ³¹czy siê z baz¹ danych
-                //var tagSeeder = services.GetRequiredService<TagSeeder>();
-                //await tagSeeder.SeedTagsToDatabase();
+                if (!dbContext.Tags.Any())
+                {
+                var tagSeeder = services.GetRequiredService<ITagSeeder>();
+                tagSeeder.SeedTagsToDatabase();
+                }
             }
             app.Run();
         }
