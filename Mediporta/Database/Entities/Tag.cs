@@ -10,7 +10,7 @@
         public bool IsRequired { get; set; }
         public DateTime? LastActivityDate { get; set; }
         public string Name { get; set; }
-        public List<string> Synonyms { get; set; }
+        public List<string>? Synonyms { get; set; }
         public int? UserId { get; set; }
     }
 }

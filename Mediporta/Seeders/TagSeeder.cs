@@ -30,7 +30,7 @@ namespace Mediporta.Seeders
 
             for (int i = 1; i < 11; i++)
             {
-                var response = await _httpClient.GetAsync($"/2.3/tags?page={i}&pagesize=2&order=desc&min=1000&sort=popular&site=stackoverflow");
+                var response = await _httpClient.GetAsync($"/2.3/tags?page={i}&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow");
                 response.EnsureSuccessStatusCode();
 
                 using (var decompressionStream = new GZipStream(await response.Content.ReadAsStreamAsync(), CompressionMode.Decompress))
@@ -49,7 +49,7 @@ namespace Mediporta.Seeders
                 }
             }
             _context.Tags.AddRange(range);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
     }
 }
