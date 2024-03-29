@@ -47,7 +47,7 @@ namespace Mediporta.Services
 
             _validator.ValidationSelectedTagsDto(dto);
 
-            var response = await _httpClient.GetAsync($"{apiUrl}/2.3/tags?order={dto.Order}&sort={dto.SortBy}&site=stackoverflow&pagenumber={dto.PageNumber}&pagesize={dto.PageSize}");
+            var response = await _httpClient.GetAsync($"{apiUrl}/2.3/tags?order={dto.Order}&sort={dto.SortBy}&site=stackoverflow&page={dto.PageNumber}&pagesize={dto.PageSize}");
 
             if (!response.IsSuccessStatusCode)
             {
