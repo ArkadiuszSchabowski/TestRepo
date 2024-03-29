@@ -32,6 +32,12 @@ namespace Mediporta.Controllers
 
             return dto;
         }
+        [HttpGet("sort")]
+        public async Task<object> GetSelectedTags([FromQuery] SelectedTagsDto dto)
+        {
+            var response = await _service.GetTags(dto);
+            return response;
+        }
     }
 }
 

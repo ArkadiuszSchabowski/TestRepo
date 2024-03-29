@@ -17,22 +17,28 @@ namespace Mediporta.Middleware
             {
             await next.Invoke(context);
             }
+            catch(BadRequestException e)
+            {
+                _logger.LogInformation(e, e.Message);
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync(e.Message);
+            }
             catch (NotFoundException e)
             {
                 _logger.LogInformation(e, e.Message);
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsync(e.Message);
             }
-            catch (APIUnavailableException e)
-            {
-                _logger.LogInformation(e, e.Message);
-                context.Response.StatusCode = 503;
-                await context.Response.WriteAsync(e.Message);
-            }
             catch (MissingAddressException e)
             {
                 _logger.LogWarning(e, e.Message);
                 context.Response.StatusCode = 500;
+                await context.Response.WriteAsync(e.Message);
+            }
+            catch (APIUnavailableException e)
+            {
+                _logger.LogInformation(e, e.Message);
+                context.Response.StatusCode = 503;
                 await context.Response.WriteAsync(e.Message);
             }
             catch (Exception e)
