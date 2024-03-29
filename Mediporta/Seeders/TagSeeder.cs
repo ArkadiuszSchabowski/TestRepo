@@ -45,6 +45,7 @@ namespace Mediporta.Seeders
             for (int i = 1; i < 11; i++)
             {
                 var response = _httpClient.GetAsync($"{apiUrl}/2.3/tags?page={i}&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow").Result;
+
                 Task.Delay(1000).Wait();
 
                 response.EnsureSuccessStatusCode();
