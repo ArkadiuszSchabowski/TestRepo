@@ -1,7 +1,9 @@
-﻿using Mediporta.Models;
+﻿using Mediporta.Database.Entities;
+using Mediporta.Models;
 using Mediporta.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 
 
@@ -37,6 +39,11 @@ namespace Mediporta.Controllers
         {
             var response = await _service.GetTags(dto);
             return response;
+        }
+        [HttpPatch]
+        public async Task ReloadTags()
+        {
+            _service.ReloadTasks();
         }
     }
 }

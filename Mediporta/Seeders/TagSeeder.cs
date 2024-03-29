@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Mediporta.Database;
 using Mediporta.Database.Entities;
+using Mediporta.Exceptions;
 using Mediporta.Services;
 using Newtonsoft.Json;
 
@@ -48,9 +49,13 @@ namespace Mediporta.Seeders
 
                 Task.Delay(1000).Wait();
 
-                response.EnsureSuccessStatusCode();
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new APIUnavailableException("Wystąpił problem z zewnętrznym serwerem");
+                }
 
                 using (var decompressionStream = new GZipStream(response.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
+
                 using (var streamReader = new StreamReader(decompressionStream))
                 {
                     var json = streamReader.ReadToEndAsync().Result;

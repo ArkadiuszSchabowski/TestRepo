@@ -1,4 +1,6 @@
-﻿using Mediporta.Exceptions;
+﻿using Mediporta.Database;
+using Mediporta.Database.Entities;
+using Mediporta.Exceptions;
 using Mediporta.Models;
 
 namespace Mediporta.Validators
@@ -9,6 +11,13 @@ namespace Mediporta.Validators
     }
     public class TagRequestValidator : ITagValidator
     {
+        private readonly MyDbContext _context;
+
+        public TagRequestValidator(MyDbContext context)
+        {
+            _context = context;
+        }
+
         public void ValidationSelectedTagsDto(SelectedTagsDto dto)
         {
             if (dto.PageSize < 1 || dto.PageSize > 100)
