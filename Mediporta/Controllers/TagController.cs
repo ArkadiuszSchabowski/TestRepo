@@ -1,11 +1,9 @@
-﻿using Mediporta.Database;
-using Mediporta.Database.Entities;
-using Mediporta.Models;
-using Mediporta.Seeders;
+﻿using Mediporta.Models;
 using Mediporta.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.IO.Compression;
+using System.Numerics;
+
 
 namespace Mediporta.Controllers
 {
@@ -22,14 +20,17 @@ namespace Mediporta.Controllers
         [HttpGet]
         public async Task<object> Get()
         {
-            var apiResponse = await _service.GetTags();
-            return apiResponse;
+            var response = await _service.GetTags();
+            return response;
 
         }
-        [HttpGet("counter")]
-        public double CountTags([FromQuery] TagCounterDto dto)
+        [HttpGet("count")]
+        public async Task<ActionResult<List<PercentageTagsDto>>> CountTags()
         {
-            return 2.2;
+            var response = await _service.GetTags();
+            List<PercentageTagsDto> dto = _service.CountPercentTags(response);
+
+            return dto;
         }
     }
 }

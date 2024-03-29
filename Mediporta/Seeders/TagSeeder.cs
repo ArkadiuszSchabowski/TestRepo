@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Mediporta.Database;
 using Mediporta.Database.Entities;
+using Mediporta.Services;
 using Newtonsoft.Json;
 
 namespace Mediporta.Seeders
@@ -19,11 +20,15 @@ namespace Mediporta.Seeders
     {
         private readonly HttpClient _httpClient;
         private readonly MyDbContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly ITagService _service;
 
-        public TagSeeder(HttpClient httpClient, MyDbContext context)
+        public TagSeeder(HttpClient httpClient, MyDbContext context, IConfiguration configuration, ITagService service)
         {
             _httpClient = httpClient;
             _context = context;
+            _configuration = configuration;
+            _service = service;
         }
         public void SeedTagsToDatabase()
         {
@@ -33,14 +38,13 @@ namespace Mediporta.Seeders
 
         public List<Tag> GetTags()
         {
-            List<Tag> listTag = new List<Tag>();
+            string apiUrl = _service.SetHttpClientBaseAddress();
 
-            var apiUrl = "https://api.stackexchange.com";
-            _httpClient.BaseAddress = new Uri(apiUrl);
+            List<Tag> listTag = new List<Tag>();
 
             for (int i = 1; i < 11; i++)
             {
-                var response = _httpClient.GetAsync($"/2.3/tags?page={i}&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow").Result;
+                var response = _httpClient.GetAsync($"{apiUrl}/2.3/tags?page={i}&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow").Result;
                 Task.Delay(1000).Wait();
 
                 response.EnsureSuccessStatusCode();

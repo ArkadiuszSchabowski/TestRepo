@@ -1,33 +1,53 @@
-﻿using Mediporta.Database;
-using Mediporta.Database.Entities;
+﻿using Mediporta.Database.Entities;
 using Mediporta.Exceptions;
-using Mediporta.Seeders;
+using Mediporta.Models;
 using Newtonsoft.Json;
 using System.IO.Compression;
-using System.Net.Http;
 
 namespace Mediporta.Services
 {
     public interface ITagService
     {
+        string SetHttpClientBaseAddress();
+        List<PercentageTagsDto> CountPercentTags(List<Tag> tags);
         Task<List<Tag>> GetTags();
     }
     public class TagService : ITagService
     {
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
-        public TagService(HttpClient httpClient)
+        public TagService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _configuration = configuration;
         }
+
+        public List<PercentageTagsDto> CountPercentTags(List<Tag> tags)
+        {
+
+            var sum = tags.Sum(x => x.Count);
+
+            var tagPercentages = tags.Select(x => new PercentageTagsDto
+            {
+                Name = x.Name,
+                Count = x.Count,
+                PercentageTag = ((double)x.Count / (double)sum) * 100
+            }).ToList();
+
+            return tagPercentages;
+        }
+
         public async Task<List<Tag>> GetTags()
         {
-            var apiUrl = "https://api.stackexchange.com";
-            _httpClient.BaseAddress = new Uri(apiUrl);
+            string apiUrl = SetHttpClientBaseAddress();
 
-            var response = await _httpClient.GetAsync("/2.3/tags?page=1&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow");
+            var response = await _httpClient.GetAsync($"{apiUrl}/2.3/tags?page=1&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow");
 
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new APIUnavailableException("Wystąpił problem z zewnętrznym serwerem");
+            }
 
             using (var decompressionStream = new GZipStream(await response.Content.ReadAsStreamAsync(), CompressionMode.Decompress))
 
@@ -44,6 +64,20 @@ namespace Mediporta.Services
 
                 return apiResponse.Items;
             }
+        }
+        public string SetHttpClientBaseAddress()
+        {
+            var apiUrl = _configuration.GetConnectionString("ApiUrl");
+
+            if (apiUrl != null)
+            {
+                _httpClient.BaseAddress = new Uri(apiUrl);
+            }
+            else
+            {
+                throw new InvalidOperationException("Niepodano adresu serwera zewnętrznego");
+            }
+            return apiUrl;
         }
     }
 }
