@@ -1,6 +1,8 @@
 ﻿using Mediporta.Database;
 using Mediporta.Database.Entities;
+using Mediporta.Models;
 using Mediporta.Seeders;
+using Mediporta.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.IO.Compression;
@@ -11,41 +13,23 @@ namespace Mediporta.Controllers
     [ApiController]
     public class TagController
     {
-        private readonly HttpClient _httpClient;
-        private readonly MyDbContext _context;
-        private readonly ITagSeeder _seeder;
+        private readonly ITagService _service;
 
-        public TagController(HttpClient httpClient, MyDbContext context, ITagSeeder seeder)
+        public TagController(ITagService service)
         {
-            _httpClient = httpClient;
-            _context = context;
-            _seeder = seeder;
+            _service = service;
         }
         [HttpGet]
         public async Task<object> Get()
         {
-            if (!_context.Tags.Any())
-            {
-                _seeder.SeedTagsToDatabase();
-            }
-            var apiUrl = "https://api.stackexchange.com";
+            var apiResponse = await _service.GetTags();
+            return apiResponse;
 
-            _httpClient.BaseAddress = new Uri(apiUrl);
-
-            var response = await _httpClient.GetAsync("/2.3/tags?page=1&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow");
-
-            response.EnsureSuccessStatusCode();
-
-            using (var decompressionStream = new GZipStream(await response.Content.ReadAsStreamAsync(), CompressionMode.Decompress))
-
-            using (var streamReader = new StreamReader(decompressionStream))
-            {
-                var json = await streamReader.ReadToEndAsync();
-
-                var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(json);
-
-                return apiResponse;
-            }
+        }
+        [HttpGet("counter")]
+        public double CountTags([FromQuery] TagCounterDto dto)
+        {
+            return 2.2;
         }
     }
 }

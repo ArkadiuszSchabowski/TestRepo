@@ -1,4 +1,6 @@
 ﻿
+using Mediporta.Exceptions;
+
 namespace Mediporta.Middleware
 {
     public class ErrorHandlingMiddleware : IMiddleware
@@ -14,7 +16,12 @@ namespace Mediporta.Middleware
             try
             {
             await next.Invoke(context);
-
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogInformation(e, e.Message);
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync(e.Message);
             }
             catch (Exception e)
             {

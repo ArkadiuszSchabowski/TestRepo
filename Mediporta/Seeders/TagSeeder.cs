@@ -14,6 +14,7 @@ namespace Mediporta.Seeders
     {
        void SeedTagsToDatabase();
     }
+
     public class TagSeeder : ITagSeeder
     {
         private readonly HttpClient _httpClient;
@@ -24,8 +25,13 @@ namespace Mediporta.Seeders
             _httpClient = httpClient;
             _context = context;
         }
-
         public void SeedTagsToDatabase()
+        {
+            var tags = GetTags();
+            SaveTagsToDatabase(tags);
+        }
+
+        public List<Tag> GetTags()
         {
             List<Tag> listTag = new List<Tag>();
 
@@ -54,6 +60,10 @@ namespace Mediporta.Seeders
                     }
                 }
             }
+            return listTag;
+        }
+        public void SaveTagsToDatabase(List<Tag> listTag)
+        {
             _context.Tags.AddRange(listTag);
             _context.SaveChanges();
         }

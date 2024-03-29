@@ -1,6 +1,7 @@
 using Mediporta.Database;
 using Mediporta.Middleware;
 using Mediporta.Seeders;
+using Mediporta.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ namespace Mediporta
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<ITagSeeder, TagSeeder>();
+            builder.Services.AddScoped<ITagService, TagService>();
             builder.Logging.AddNLog();
             builder.Services.AddScoped<ErrorHandlingMiddleware>();
             builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TestDatabaseConnectionString")));
