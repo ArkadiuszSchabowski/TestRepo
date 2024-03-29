@@ -16,7 +16,7 @@ namespace Mediporta.Services
         Task<List<Tag>> GetTags();
         Task<List<Tag>> GetTags(SelectedTagsDto dto);
         Task<ApiResponse?> DecompressionResponse(HttpResponseMessage response);
-        void ReloadTasks();
+        List<Tag> ReloadTasks();
     }
     public class TagService : ITagService
     {
@@ -32,11 +32,45 @@ namespace Mediporta.Services
             _validator = validator;
             _context = context;
         }
-        public void ReloadTasks()
+        public List<Tag> ReloadTasks()
         {
-            var apiTags = GetTags();
-            
+            string apiUrl = SetHttpClientBaseAddress();
 
+            int tagsCount = _context.Tags.Count();
+
+            List<Tag> listTag = new List<Tag>();
+
+            for (int i = 1; i < 11; i++)
+            {
+                var response = _httpClient.GetAsync($"{apiUrl}/2.3/tags?page={i}&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow").Result;
+
+                Task.Delay(1000).Wait();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new APIUnavailableException("Wystąpił problem z zewnętrznym serwerem");
+                }
+
+                using (var decompressionStream = new GZipStream(response.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
+
+                using (var streamReader = new StreamReader(decompressionStream))
+                {
+                    var json = streamReader.ReadToEndAsync().Result;
+                    var responseApi = JsonConvert.DeserializeObject<ApiResponse>(json);
+
+                    if (responseApi != null && responseApi.Items != null)
+                    {
+                        foreach (var tag in responseApi.Items)
+                        {
+                            if (!_context.Tags.Any(x => x.Name == tag.Name))
+                            {
+                                listTag.Add(tag);
+                            }
+                        }
+                    }
+                }
+            }
+            return listTag;
         }
 
         public List<PercentageTagsDto> CountPercentTags(List<Tag> tags)

@@ -1,5 +1,6 @@
 ﻿using Mediporta.Database.Entities;
 using Mediporta.Models;
+using Mediporta.Seeders;
 using Mediporta.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,12 @@ namespace Mediporta.Controllers
     public class TagController
     {
         private readonly ITagService _service;
+        private readonly ITagSeeder _seeder;
 
-        public TagController(ITagService service)
+        public TagController(ITagService service, ITagSeeder seeder)
         {
             _service = service;
+            _seeder = seeder;
         }
         [HttpGet]
         public async Task<object> Get()
@@ -40,10 +43,11 @@ namespace Mediporta.Controllers
             var response = await _service.GetTags(dto);
             return response;
         }
-        [HttpPatch]
-        public async Task ReloadTags()
+        [HttpPost("reload")]
+        public void ReloadTags()
         {
-            _service.ReloadTasks();
+            var tags = _service.ReloadTasks();
+            _seeder.SaveTagsToDatabase(tags);
         }
     }
 }

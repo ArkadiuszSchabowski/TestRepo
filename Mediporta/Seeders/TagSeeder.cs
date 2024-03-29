@@ -15,6 +15,7 @@ namespace Mediporta.Seeders
     public interface ITagSeeder
     {
        void SeedTagsToDatabase();
+        void SaveTagsToDatabase(List<Tag> listTag);
     }
 
     public class TagSeeder : ITagSeeder
