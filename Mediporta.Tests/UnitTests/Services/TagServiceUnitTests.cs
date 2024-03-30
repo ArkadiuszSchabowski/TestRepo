@@ -14,8 +14,9 @@ namespace Mediporta.Tests.UnitTests.Services
 {
     public class TagServiceUnitTests
     {
-        [Test]
-        public void CountPercentTags_WhenCalled_ShouldBeReturnTagPercentages()
+        private ITagService _service;
+        [SetUp]
+        public void Setup()
         {
             var mockHttpClient = new Mock<HttpClient>();
             var mockConfiguration = new Mock<IConfiguration>();
@@ -26,8 +27,11 @@ namespace Mediporta.Tests.UnitTests.Services
 
             var mockContext = new Mock<FakeMyDbContext>(options);
 
-            var tagService = new TagService(mockHttpClient.Object, mockConfiguration.Object, mockValidator.Object, mockContext.Object);
-
+            _service = new TagService(mockHttpClient.Object, mockConfiguration.Object, mockValidator.Object, mockContext.Object);
+        }
+        [Test]
+        public void CountPercentTags_WhenCalled_ShouldBeReturnCorrectListOfTagPercentages()
+        {
             var tags = new List<Tag>()
             {
                 new Tag
@@ -58,7 +62,7 @@ namespace Mediporta.Tests.UnitTests.Services
                 }
             };
 
-            var result = tagService.CountPercentTags(tags);
+            var result = _service.CountPercentTags(tags);
 
             result.Should().BeEquivalentTo(new List<PercentageTagsDto>
             {

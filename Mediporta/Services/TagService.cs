@@ -119,8 +119,6 @@ namespace Mediporta.Services
 
             return apiResponse.Items;
         }
-
-
         public string SetHttpClientBaseAddress()
         {
             var apiUrl = _configuration.GetConnectionString("ApiUrl");

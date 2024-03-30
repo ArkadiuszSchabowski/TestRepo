@@ -10,12 +10,6 @@ namespace Mediporta.Validators
     }
     public class TagRequestValidator : ITagValidator
     {
-        private readonly MyDbContext _context;
-
-        public TagRequestValidator(MyDbContext context)
-        {
-            _context = context;
-        }
 
         public void ValidationSelectedTagsDto(SelectedTagsDto dto)
         {
