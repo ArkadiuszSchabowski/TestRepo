@@ -1,12 +1,7 @@
-﻿using Mediporta.Database.Entities;
-using Mediporta.Models;
+﻿using Mediporta.Models;
 using Mediporta.Seeders;
 using Mediporta.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Numerics;
-
 
 namespace Mediporta.Controllers
 {

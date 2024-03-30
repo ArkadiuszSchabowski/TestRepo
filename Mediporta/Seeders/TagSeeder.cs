@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Compression;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Mediporta.Database;
+﻿using Mediporta.Database;
 using Mediporta.Database.Entities;
 using Mediporta.Exceptions;
 using Mediporta.Services;
 using Newtonsoft.Json;
+using System.IO.Compression;
 
 namespace Mediporta.Seeders
 {

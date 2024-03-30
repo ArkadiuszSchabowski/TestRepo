@@ -1,5 +1,4 @@
 ﻿using Mediporta.Database;
-using Mediporta.Database.Entities;
 using Mediporta.Exceptions;
 using Mediporta.Models;
 

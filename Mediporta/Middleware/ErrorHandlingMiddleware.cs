@@ -1,5 +1,4 @@
-﻿
-using Mediporta.Exceptions;
+﻿using Mediporta.Exceptions;
 
 namespace Mediporta.Middleware
 {

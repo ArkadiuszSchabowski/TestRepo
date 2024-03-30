@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace Mediporta.Tests.UnitTests.Services
 {
