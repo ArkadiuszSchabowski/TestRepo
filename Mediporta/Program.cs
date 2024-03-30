@@ -3,14 +3,8 @@ using Mediporta.Middleware;
 using Mediporta.Seeders;
 using Mediporta.Services;
 using Mediporta.Validators;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using NLog.Extensions.Logging;
-using System;
 
 namespace Mediporta
 {
