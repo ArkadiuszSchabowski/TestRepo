@@ -9,7 +9,7 @@ namespace Mediporta.Seeders
 {
     public interface ITagSeeder
     {
-       void SeedTagsToDatabase();
+        Task SeedTagsToDatabase();
         void SaveTagsToDatabase(List<Tag> listTag);
     }
 
@@ -27,13 +27,13 @@ namespace Mediporta.Seeders
             _configuration = configuration;
             _service = service;
         }
-        public void SeedTagsToDatabase()
+        public async Task SeedTagsToDatabase()
         {
-            var tags = GetTags();
+            var tags = await GetTags();
             SaveTagsToDatabase(tags);
         }
 
-        public List<Tag> GetTags()
+        public async Task<List<Tag>> GetTags()
         {
             string apiUrl = _service.SetHttpClientBaseAddress();
 
@@ -50,24 +50,19 @@ namespace Mediporta.Seeders
                     throw new APIUnavailableException("Wystąpił problem z zewnętrznym serwerem");
                 }
 
-                using (var decompressionStream = new GZipStream(response.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
+                var apiResponse = await _service.DecompressionResponse(response);
 
-                using (var streamReader = new StreamReader(decompressionStream))
+                if (apiResponse != null && apiResponse.Items != null)
                 {
-                    var json = streamReader.ReadToEndAsync().Result;
-                    var responseApi = JsonConvert.DeserializeObject<ApiResponse>(json);
-
-                    if (responseApi != null && responseApi.Items != null)
+                    foreach (var tag in apiResponse.Items)
                     {
-                        foreach (var tag in responseApi.Items)
-                        {
-                            listTag.Add(tag);
-                        }
+                        listTag.Add(tag);
                     }
                 }
             }
             return listTag;
         }
+
         public void SaveTagsToDatabase(List<Tag> listTag)
         {
             _context.Tags.AddRange(listTag);
