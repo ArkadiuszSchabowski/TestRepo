@@ -17,14 +17,12 @@ namespace Mediporta.Seeders
     {
         private readonly HttpClient _httpClient;
         private readonly MyDbContext _context;
-        private readonly IConfiguration _configuration;
         private readonly ITagService _service;
 
-        public TagSeeder(HttpClient httpClient, MyDbContext context, IConfiguration configuration, ITagService service)
+        public TagSeeder(HttpClient httpClient, MyDbContext context, ITagService service)
         {
             _httpClient = httpClient;
             _context = context;
-            _configuration = configuration;
             _service = service;
         }
         public async Task SeedTagsToDatabase()

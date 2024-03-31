@@ -11,25 +11,24 @@ namespace Mediporta.Controllers
     {
         private readonly ITagService _service;
         private readonly ITagSeeder _seeder;
-        private readonly string _apiUrl;
+        private string _apiUrl;
 
         public TagController(ITagService service, ITagSeeder seeder)
         {
             _service = service;
             _seeder = seeder;
-            _apiUrl = _service.SetHttpClientBaseAddress();
         }
         [HttpGet]
         public async Task<object> Get()
         {
-            var response = await _service.GetTags(_apiUrl);
+            var response = await _service.GetTags();
             return response;
 
         }
         [HttpGet("count")]
         public async Task<ActionResult<List<PercentageTagsDto>>> CountTags()
         {
-            var response = await _service.GetTags(_apiUrl);
+            var response = await _service.GetTags();
             List<PercentageTagsDto> dto = _service.CountPercentTags(response);
 
             return dto;
@@ -37,13 +36,13 @@ namespace Mediporta.Controllers
         [HttpGet("sort")]
         public async Task<object> GetSelectedTags([FromQuery] SelectedTagsDto dto)
         {
-            var response = await _service.GetTags(dto, _apiUrl);
+            var response = await _service.GetTags(dto);
             return response;
         }
         [HttpPost("reload")]
         public async Task ReloadTags()
         {
-            var tags = await _service.ReloadTasks(_apiUrl);
+            var tags = await _service.ReloadTasks();
             _seeder.SaveTagsToDatabase(tags);
         }
     }

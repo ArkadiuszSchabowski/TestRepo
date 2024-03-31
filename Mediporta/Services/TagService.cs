@@ -5,6 +5,7 @@ using Mediporta.Models;
 using Mediporta.Validators;
 using Newtonsoft.Json;
 using System.IO.Compression;
+using static System.Net.WebRequestMethods;
 
 namespace Mediporta.Services
 {
@@ -12,10 +13,10 @@ namespace Mediporta.Services
     {
         string SetHttpClientBaseAddress();
         List<PercentageTagsDto> CountPercentTags(List<Tag> tags);
-        Task<List<Tag>> GetTags(string apiUrl);
-        Task<List<Tag>> GetTags(SelectedTagsDto dto, string apiUrl);
+        Task<List<Tag>> GetTags();
+        Task<List<Tag>> GetTags(SelectedTagsDto dto);
         Task<ApiResponse?> DecompressionResponse(HttpResponseMessage response);
-        Task<List<Tag>> ReloadTasks(string apiUrl);
+        Task<List<Tag>> ReloadTasks();
     }
     public class TagService : ITagService
     {
@@ -31,9 +32,9 @@ namespace Mediporta.Services
             _validator = validator;
             _context = context;
         }
-        public async Task<List<Tag>> ReloadTasks(string apiUrl)
+        public async Task<List<Tag>> ReloadTasks()
         {
-            SetHttpClientBaseAddress();
+            var apiUrl = SetHttpClientBaseAddress();
 
             int tagsCount = _context.Tags.Count();
 
@@ -81,11 +82,11 @@ namespace Mediporta.Services
             return tagPercentages;
         }
 
-        public async Task<List<Tag>> GetTags(SelectedTagsDto dto, string apiUrl)
+        public async Task<List<Tag>> GetTags(SelectedTagsDto dto)
         {
             _validator.ValidationSelectedTagsDto(dto);
 
-            SetHttpClientBaseAddress();
+            var apiUrl = SetHttpClientBaseAddress();
 
             var response = await _httpClient.GetAsync($"{apiUrl}/2.3/tags?order={dto.Order}&sort={dto.SortBy}&site=stackoverflow&page={dto.PageNumber}&pagesize={dto.PageSize}");
 
@@ -98,9 +99,9 @@ namespace Mediporta.Services
 
             return apiResponse.Items;
         }
-        public async Task<List<Tag>> GetTags(string apiUrl)
+        public async Task<List<Tag>> GetTags()
         {
-            SetHttpClientBaseAddress();
+            var apiUrl = SetHttpClientBaseAddress();
 
             var response = await _httpClient.GetAsync($"{apiUrl}/2.3/tags?page=1&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow");
 
