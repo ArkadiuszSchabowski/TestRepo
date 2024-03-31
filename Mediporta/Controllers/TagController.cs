@@ -41,9 +41,9 @@ namespace Mediporta.Controllers
             return response;
         }
         [HttpPost("reload")]
-        public void ReloadTags()
+        public async Task ReloadTags()
         {
-            var tags = _service.ReloadTasks(_apiUrl);
+            var tags = await _service.ReloadTasks(_apiUrl);
             _seeder.SaveTagsToDatabase(tags);
         }
     }

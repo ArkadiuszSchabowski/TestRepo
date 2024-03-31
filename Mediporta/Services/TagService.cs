@@ -15,7 +15,7 @@ namespace Mediporta.Services
         Task<List<Tag>> GetTags(string apiUrl);
         Task<List<Tag>> GetTags(SelectedTagsDto dto, string apiUrl);
         Task<ApiResponse?> DecompressionResponse(HttpResponseMessage response);
-        List<Tag> ReloadTasks(string apiUrl);
+        Task<List<Tag>> ReloadTasks(string apiUrl);
     }
     public class TagService : ITagService
     {
@@ -31,8 +31,10 @@ namespace Mediporta.Services
             _validator = validator;
             _context = context;
         }
-        public List<Tag> ReloadTasks(string apiUrl)
+        public async Task<List<Tag>> ReloadTasks(string apiUrl)
         {
+            SetHttpClientBaseAddress();
+
             int tagsCount = _context.Tags.Count();
 
             List<Tag> listTag = new List<Tag>();
@@ -48,27 +50,22 @@ namespace Mediporta.Services
                     throw new APIUnavailableException("Wystąpił problem z zewnętrznym serwerem");
                 }
 
-                using (var decompressionStream = new GZipStream(response.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
+                var apiResponse = await DecompressionResponse(response);
 
-                using (var streamReader = new StreamReader(decompressionStream))
+                if (apiResponse != null && apiResponse.Items != null)
                 {
-                    var json = streamReader.ReadToEndAsync().Result;
-                    var responseApi = JsonConvert.DeserializeObject<ApiResponse>(json);
-
-                    if (responseApi != null && responseApi.Items != null)
+                    foreach (var tag in apiResponse.Items)
                     {
-                        foreach (var tag in responseApi.Items)
+                        if (!_context.Tags.Any(x => x.Name == tag.Name))
                         {
-                            if (!_context.Tags.Any(x => x.Name == tag.Name))
-                            {
-                                listTag.Add(tag);
-                            }
+                            listTag.Add(tag);
                         }
                     }
                 }
             }
             return listTag;
         }
+
 
         public List<PercentageTagsDto> CountPercentTags(List<Tag> tags)
         {
@@ -88,6 +85,8 @@ namespace Mediporta.Services
         {
             _validator.ValidationSelectedTagsDto(dto);
 
+            SetHttpClientBaseAddress();
+
             var response = await _httpClient.GetAsync($"{apiUrl}/2.3/tags?order={dto.Order}&sort={dto.SortBy}&site=stackoverflow&page={dto.PageNumber}&pagesize={dto.PageSize}");
 
             if (!response.IsSuccessStatusCode)
@@ -101,6 +100,8 @@ namespace Mediporta.Services
         }
         public async Task<List<Tag>> GetTags(string apiUrl)
         {
+            SetHttpClientBaseAddress();
+
             var response = await _httpClient.GetAsync($"{apiUrl}/2.3/tags?page=1&pagesize=100&order=desc&min=1000&sort=popular&site=stackoverflow");
 
             if (!response.IsSuccessStatusCode)
