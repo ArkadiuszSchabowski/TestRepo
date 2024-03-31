@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Mediporta\Mediporta.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="IntegrationTests\" />
-  </ItemGroup>
-
 </Project>

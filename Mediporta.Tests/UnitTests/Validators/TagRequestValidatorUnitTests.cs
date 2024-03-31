@@ -3,7 +3,7 @@ using Mediporta.Models;
 using Mediporta.Validators;
 using NUnit.Framework;
 
-namespace Mediporta.Tests.UnitTests.Services
+namespace Mediporta.Tests.UnitTests.Validators
 {
     public class TagRequestValidatorUnitTests
     {
