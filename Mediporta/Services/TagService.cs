@@ -5,7 +5,6 @@ using Mediporta.Models;
 using Mediporta.Validators;
 using Newtonsoft.Json;
 using System.IO.Compression;
-using static System.Net.WebRequestMethods;
 
 namespace Mediporta.Services
 {
@@ -116,7 +115,7 @@ namespace Mediporta.Services
         }
         public string SetHttpClientBaseAddress()
         {
-            var apiUrl = _configuration.GetConnectionString("ApiUrl");
+            var apiUrl = _configuration.GetValue<string>("ApiUrl");
 
             if (apiUrl != null)
             {

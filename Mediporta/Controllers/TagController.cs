@@ -1,4 +1,5 @@
-﻿using Mediporta.Models;
+﻿using Mediporta.Database.Entities;
+using Mediporta.Models;
 using Mediporta.Seeders;
 using Mediporta.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ namespace Mediporta.Controllers
             _seeder = seeder;
         }
         [HttpGet]
-        public async Task<object> Get()
+        public async Task<List<Tag>> GetTags()
         {
             var response = await _service.GetTags();
             return response;

@@ -64,11 +64,26 @@ namespace Mediporta.Tests.UnitTests.Services
 
             var result = _service.CountPercentTags(tags);
 
-            result.Should().BeEquivalentTo(new List<PercentageTagsDto>
-            {
+            result.Should().BeEquivalentTo(new List<PercentageTagsDto>{
                 new PercentageTagsDto { Name = "javascript", Count = 6, PercentageTag = 60 },
-                new PercentageTagsDto { Name = "java", Count = 4, PercentageTag = 40 }
-            });
+                new PercentageTagsDto { Name = "java", Count = 4, PercentageTag = 40 }});
+        }
+        [Test]
+        public void SetHttpClientBaseAddress_WhenCalled_ReturnStringApiUrl()
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                { { "ApiUrl", "https://api.stackexchange.com"}}
+                .Select(kv => new KeyValuePair<string, string?>(kv.Key, kv.Value))
+                .ToList()).Build();
+
+            var httpClient = new HttpClient();
+
+            var service = new TagService(httpClient, configuration, null, null);
+
+            var result = service.SetHttpClientBaseAddress();
+
+            Assert.That(result, Is.EqualTo("https://api.stackexchange.com"));
         }
     }
 }
