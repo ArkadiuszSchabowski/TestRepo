@@ -22,6 +22,12 @@ namespace Mediporta.Middleware
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync(e.Message);
             }
+            catch (UrlException e)
+            {
+                _logger.LogInformation(e, e.Message);
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync(e.Message);
+            }
             catch (NotFoundException e)
             {
                 _logger.LogInformation(e, e.Message);

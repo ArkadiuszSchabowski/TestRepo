@@ -106,7 +106,7 @@ namespace Mediporta.Services
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new APIUnavailableException("Wystąpił problem z zewnętrznym serwerem");
+                throw new APIUnavailableException("Nie udało się pobrać danych. Zewnętrzny serwer jest niedostępny. Spróbuj ponownie później.");
             }
 
             var apiResponse = await DecompressionResponse(response);
@@ -117,16 +117,16 @@ namespace Mediporta.Services
         {
             var apiUrl = _configuration.GetValue<string>("ApiUrl");
 
-            if (apiUrl != null)
+            if (!Uri.TryCreate(apiUrl, UriKind.Absolute, out _))
             {
-                _httpClient.BaseAddress = new Uri(apiUrl);
+                throw new UrlException("Nieprawidłowy format adresu URL");
             }
-            else
-            {
-                throw new InvalidOperationException("Niepodano adresu serwera zewnętrznego");
-            }
+
+            _httpClient.BaseAddress = new Uri(apiUrl);
+
             return apiUrl;
         }
+
         public async Task<ApiResponse?> DecompressionResponse(HttpResponseMessage response)
         {
             using (var decompressionStream = new GZipStream(await response.Content.ReadAsStreamAsync(), CompressionMode.Decompress))
