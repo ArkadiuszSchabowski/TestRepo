@@ -1,8 +1,8 @@
 ﻿namespace Mediporta.Exceptions
 {
-    public class APIUnavailableException : Exception
+    public class ApiUnavailableException : Exception
     {
-        public APIUnavailableException(string message) : base(message)
+        public ApiUnavailableException(string message) : base(message)
         {
             
         }

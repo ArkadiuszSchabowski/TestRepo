@@ -40,7 +40,7 @@ namespace Mediporta.Middleware
                 context.Response.StatusCode = 500;
                 await context.Response.WriteAsync(e.Message);
             }
-            catch (APIUnavailableException e)
+            catch (ApiUnavailableException e)
             {
                 _logger.LogInformation(e, e.Message);
                 context.Response.StatusCode = 503;

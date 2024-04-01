@@ -45,7 +45,7 @@ namespace Mediporta.Seeders
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new APIUnavailableException("Wystąpił problem z zewnętrznym serwerem");
+                    throw new ApiUnavailableException("Wystąpił problem z zewnętrznym serwerem");
                 }
 
                 var apiResponse = await _service.DecompressionResponse(response);

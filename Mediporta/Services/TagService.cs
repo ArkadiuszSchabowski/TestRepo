@@ -47,7 +47,7 @@ namespace Mediporta.Services
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new APIUnavailableException("Wystąpił problem z zewnętrznym serwerem");
+                    throw new ApiUnavailableException("Wystąpił problem z zewnętrznym serwerem");
                 }
 
                 var apiResponse = await DecompressionResponse(response);
@@ -91,7 +91,7 @@ namespace Mediporta.Services
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new APIUnavailableException("Wystąpił problem z zewnętrznym serwerem");
+                throw new ApiUnavailableException("Wystąpił problem z zewnętrznym serwerem");
             }
 
             var apiResponse = await DecompressionResponse(response);
@@ -106,7 +106,7 @@ namespace Mediporta.Services
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new APIUnavailableException("Nie udało się pobrać danych. Zewnętrzny serwer jest niedostępny. Spróbuj ponownie później.");
+                throw new ApiUnavailableException("Nie udało się pobrać danych. Zewnętrzny serwer jest niedostępny. Spróbuj ponownie później.");
             }
 
             var apiResponse = await DecompressionResponse(response);

@@ -43,7 +43,7 @@ namespace Mediporta.Tests.IntegrationTests.Controllers
         public async Task GetTags_WhenCalledWithWrongConfig_ThrowsUrlException()
         {
             var configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string> { { "ApiUrl", "WrongConfig" } })
+                .AddInMemoryCollection(new Dictionary<string, string> { { "ApiUrl", "https://api.stackxchange.com" } })
                 .Build();
 
             var options = new DbContextOptionsBuilder<MyDbContext>()
@@ -61,7 +61,7 @@ namespace Mediporta.Tests.IntegrationTests.Controllers
 
             _controller = new TagController(_service, null);
 
-            Assert.ThrowsAsync<UrlException>(async () => await _controller.GetTags());
+            Assert.ThrowsAsync<ApiUnavailableException>(async () => await _controller.GetTags());
         }
     }
 }
