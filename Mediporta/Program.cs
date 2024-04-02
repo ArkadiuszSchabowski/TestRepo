@@ -48,7 +48,7 @@ namespace Mediporta
                 {
                     var service = services.GetRequiredService<ITagService>();
                     var seeder = services.GetRequiredService<ITagSeeder>();
-                    var tags = await service.GetTags();
+                    var tags = await service.ReloadTasks();
                     seeder.SaveTagsToDatabase(tags);
                 }
             }
