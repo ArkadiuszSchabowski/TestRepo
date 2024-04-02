@@ -5,7 +5,9 @@ VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mediporta", "Mediporta.csproj", "{4AD7140B-5C6B-4738-9FEE-710B848C8C92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mediporta.Tests", "..\Mediporta.Tests\Mediporta.Tests.csproj", "{1E29A690-97C1-48C0-AF60-FA1F21FD13DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mediporta.Tests", "..\Mediporta.Tests\Mediporta.Tests.csproj", "{1E29A690-97C1-48C0-AF60-FA1F21FD13DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mediporta.Database", "..\Mediporta.Database\Mediporta.Database.csproj", "{924D3094-E622-4B5E-A47F-F9DDA9D7DE59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1E29A690-97C1-48C0-AF60-FA1F21FD13DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E29A690-97C1-48C0-AF60-FA1F21FD13DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E29A690-97C1-48C0-AF60-FA1F21FD13DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{924D3094-E622-4B5E-A47F-F9DDA9D7DE59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{924D3094-E622-4B5E-A47F-F9DDA9D7DE59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{924D3094-E622-4B5E-A47F-F9DDA9D7DE59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{924D3094-E622-4B5E-A47F-F9DDA9D7DE59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
