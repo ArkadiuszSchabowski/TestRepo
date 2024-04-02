@@ -43,7 +43,9 @@ namespace Mediporta
             {
                 var services = scope.ServiceProvider;
                 var dbContext = services.GetRequiredService<MyDbContext>();
+
                 dbContext.Database.Migrate();
+
                 if (!dbContext.Tags.Any())
                 {
                     var service = services.GetRequiredService<ITagService>();
