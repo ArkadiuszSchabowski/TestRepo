@@ -11,7 +11,7 @@ namespace Mediporta
     public class Program
     {
         private static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             _logger.Info("App started");
             var builder = WebApplication.CreateBuilder(args);
@@ -46,8 +46,10 @@ namespace Mediporta
                 dbContext.Database.Migrate();
                 if (!dbContext.Tags.Any())
                 {
-                var tagSeeder = services.GetRequiredService<ITagSeeder>();
-                tagSeeder.SeedTagsToDatabase();
+                    var service = services.GetRequiredService<ITagService>();
+                    var seeder = services.GetRequiredService<ITagSeeder>();
+                    var tags = await service.GetTags();
+                    seeder.SaveTagsToDatabase(tags);
                 }
             }
             app.Run();

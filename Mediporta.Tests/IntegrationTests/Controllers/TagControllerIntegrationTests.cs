@@ -17,6 +17,7 @@ namespace Mediporta.Tests.IntegrationTests.Controllers
         private TagController _controller;
 
         [Test]
+        [Category("TestExplorerMode")]
         public async Task GetTags_WhenCalled_ShouldReturnListOfTags()
         {
             var configuration = new ConfigurationBuilder()
@@ -40,6 +41,7 @@ namespace Mediporta.Tests.IntegrationTests.Controllers
             Assert.That(result, Is.InstanceOf<List<Tag>>());
         }
         [Test]
+        [Category("TestExplorerMode")]
         public async Task GetTags_WhenCalledWithWrongConfig_ThrowsUrlException()
         {
             var configuration = new ConfigurationBuilder()

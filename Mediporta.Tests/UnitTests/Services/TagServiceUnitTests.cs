@@ -12,6 +12,7 @@ using NUnit.Framework;
 
 namespace Mediporta.Tests.UnitTests.Services
 {
+    [TestFixture]
     public class TagServiceUnitTests
     {
         private ITagService _service;
@@ -69,6 +70,7 @@ namespace Mediporta.Tests.UnitTests.Services
                 new PercentageTagsDto { Name = "java", Count = 4, PercentageTag = 40 }});
         }
         [Test]
+        [Category("TestExplorerMode")]
         public void SetHttpClientBaseAddress_WhenCalled_ReturnStringApiUrl()
         {
             var configuration = new ConfigurationBuilder()

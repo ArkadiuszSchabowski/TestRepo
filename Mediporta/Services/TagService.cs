@@ -4,6 +4,7 @@ using Mediporta.Exceptions;
 using Mediporta.Models;
 using Mediporta.Validators;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using System.IO.Compression;
 
 namespace Mediporta.Services
@@ -115,16 +116,35 @@ namespace Mediporta.Services
         }
         public string SetHttpClientBaseAddress()
         {
-            var apiUrl = _configuration.GetValue<string>("ApiUrl");
+            var isTestExplorerMode = TestContext.CurrentContext.Test.Properties.ContainsKey("Category") &&
+             TestContext.CurrentContext.Test.Properties["Category"].Contains("TestExplorerMode");
 
-            if (!Uri.TryCreate(apiUrl, UriKind.Absolute, out _))
+            if (isTestExplorerMode)
             {
-                throw new UrlException("Nieprawidłowy format adresu URL");
+                var apiUrl = _configuration.GetValue<string>("ApiUrl");
+
+                if (!Uri.TryCreate(apiUrl, UriKind.Absolute, out _))
+                {
+                    throw new UrlException("Nieprawidłowy format adresu URL");
+                }
+
+                _httpClient.BaseAddress = new Uri(apiUrl);
+
+                return apiUrl;
             }
+            else
+            {
+                var apiUrl = _configuration.GetConnectionString("ApiUrl");
 
-            _httpClient.BaseAddress = new Uri(apiUrl);
+                if (!Uri.TryCreate(apiUrl, UriKind.Absolute, out _))
+                {
+                    throw new UrlException("Nieprawidłowy format adresu URL");
+                }
 
-            return apiUrl;
+                _httpClient.BaseAddress = new Uri(apiUrl);
+
+                return apiUrl;
+            }
         }
 
         public async Task<ApiResponse?> DecompressionResponse(HttpResponseMessage response)
