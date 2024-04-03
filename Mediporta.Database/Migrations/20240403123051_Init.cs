@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Mediporta.Migrations
+namespace Mediporta.Database.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
