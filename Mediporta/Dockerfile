@@ -1,32 +1,35 @@
-# APP
-FROM mono:latest AS app-build
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS app-build
 WORKDIR /app
 COPY . .
-RUN nuget restore && msbuild /p:Configuration=Release
+RUN dotnet restore
+RUN dotnet build -c Release -o out
 
-FROM mono:latest AS app-runtime
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS app-runtime
 WORKDIR /app
 COPY --from=app-build /app/out .
-ENTRYPOINT ["mono", "Mediporta/Mediporta.dll"]
+ENV TestDatabaseConnectionString="Server=database;Database=MediportaTaskDb;Trusted_Connection=True;Encrypt=False;"
+ENTRYPOINT ["dotnet", "Mediporta.dll"]
 
-# DATABASE
-FROM mono:latest AS database-build
-WORKDIR /app
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS database-build
+WORKDIR /database
 COPY Mediporta.Database/. .
-RUN nuget restore && msbuild /p:Configuration=Release
+RUN dotnet restore
+RUN dotnet build -c Release -o out
 
-FROM mono:latest AS database-runtime
-WORKDIR /app
-COPY --from=database-build /app/out .
-ENTRYPOINT ["mono", "Mediporta.Database.dll"]
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS database-runtime
+WORKDIR /database
+COPY --from=database-build /database/out .
+ENTRYPOINT ["dotnet", "Mediporta.Database.dll"]
 
-# TESTS
-FROM mono:latest AS tests-build
-WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS tests-build
+WORKDIR /tests
 COPY Mediporta.Tests/. .
-RUN nuget restore && msbuild /p:Configuration=Release
+RUN dotnet restore
+RUN dotnet build -c Release -o out
 
-FROM mono:latest AS tests-runtime
-WORKDIR /app
-COPY --from=tests-build /app .
-ENTRYPOINT ["mono", "Mediporta.Tests.dll"]
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS tests-runtime
+WORKDIR /tests
+COPY --from=tests-build /tests/out .
+ENTRYPOINT ["dotnet", "Mediporta.Tests.dll"]

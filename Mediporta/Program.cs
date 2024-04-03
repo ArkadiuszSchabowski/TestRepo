@@ -25,7 +25,7 @@ namespace Mediporta
             builder.Services.AddScoped<ITagValidator, TagRequestValidator>();
             builder.Logging.AddNLog();
             builder.Services.AddScoped<ErrorHandlingMiddleware>();
-            builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TestDatabaseConnectionString")));
+            builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MediportaConnectionString")));
 
             var app = builder.Build();
 

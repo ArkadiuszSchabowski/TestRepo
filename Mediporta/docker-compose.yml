@@ -2,22 +2,15 @@ version: '3.8'
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: mcr.microsoft.com/dotnet/sdk:6.0
     ports:
       - "8080:80"
     depends_on:
       - database
+    environment:
+      - MediportaConnectionString=Server=database;Database=MediportaTaskDb;Trusted_Connection=True;Encrypt=False;
 
   database:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - "ConnectionStrings__MyDatabase=Server=mySqlServer;Database=myDatabase;User=myUser;Password=myPassword;"
-
-  tests:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
