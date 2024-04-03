@@ -1,23 +1,32 @@
-
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-nanoserver-1809 AS base
+# APP
+FROM mono:latest AS app-build
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["Mediporta.csproj", "."]
-RUN dotnet restore "./Mediporta.csproj"
 COPY . .
-WORKDIR "/src/."
-RUN dotnet build "./Mediporta.csproj" -c %BUILD_CONFIGURATION% -o /app/build
+RUN nuget restore && msbuild /p:Configuration=Release
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Mediporta.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+FROM mono:latest AS app-runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Mediporta.dll"]
+COPY --from=app-build /app/out .
+ENTRYPOINT ["mono", "Mediporta/Mediporta.dll"]
+
+# DATABASE
+FROM mono:latest AS database-build
+WORKDIR /app
+COPY Mediporta.Database/. .
+RUN nuget restore && msbuild /p:Configuration=Release
+
+FROM mono:latest AS database-runtime
+WORKDIR /app
+COPY --from=database-build /app/out .
+ENTRYPOINT ["mono", "Mediporta.Database.dll"]
+
+# TESTS
+FROM mono:latest AS tests-build
+WORKDIR /app
+COPY Mediporta.Tests/. .
+RUN nuget restore && msbuild /p:Configuration=Release
+
+FROM mono:latest AS tests-runtime
+WORKDIR /app
+COPY --from=tests-build /app .
+ENTRYPOINT ["mono", "Mediporta.Tests.dll"]

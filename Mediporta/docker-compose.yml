@@ -2,24 +2,22 @@ version: '3.8'
 
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "8080:80"
+    depends_on:
+      - database
 
   database:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8081:8081"
-    depends_on:
-      - app
+    environment:
+      - "ConnectionStrings__MyDatabase=Server=mySqlServer;Database=myDatabase;User=myUser;Password=myPassword;"
 
   tests:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
-    depends_on:
-      - app
