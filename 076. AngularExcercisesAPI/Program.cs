@@ -43,6 +43,7 @@ builder.Services.AddScoped<IFlashCardSeeder, FlashCardSeeder>();
 builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("WordMasterAngularConnectionString")));
 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
 builder.Services.AddAutoMapper(typeof(FlashCardMappingProfile).Assembly);
 builder.Services.AddCors();
@@ -63,5 +64,12 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var seeder = services.GetRequiredService<IFlashCardSeeder>();
+    seeder.AddStartupFlashCards();
+}
 
 app.Run();
