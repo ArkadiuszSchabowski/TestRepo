@@ -1,0 +1,6 @@
+@_076._AngularExcercisesAPI_HostAddress = http://localhost:5038
+
+GET {{_076._AngularExcercisesAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
